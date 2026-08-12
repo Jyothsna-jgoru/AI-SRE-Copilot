@@ -2,6 +2,7 @@ let data;
 let currentId;
 
 const $ = (selector) => document.querySelector(selector);
+const demoAccount = { email: 'demo@ai-sre.local', password: 'demo123' };
 const escapeHtml = (value) => String(value).replace(
   /[&<>'"]/g,
   (character) => ({
@@ -14,12 +15,57 @@ const escapeHtml = (value) => String(value).replace(
 );
 
 async function start() {
+  bindDemoLogin();
+  if (!sessionStorage.getItem('ai-sre-demo-authenticated')) {
+    return;
+  }
+  showApplication();
+}
+
+async function loadApplication() {
   data = await fetch('data.json', { cache: 'no-store' }).then((response) => response.json());
   renderMetrics();
   renderList();
   renderEvaluation();
   selectIncident(data.incidents[0].id);
   bindNav();
+}
+
+function bindDemoLogin() {
+  const form = $('#demo-login');
+  $('#use-demo-account').onclick = () => {
+    $('#demo-email').value = demoAccount.email;
+    $('#demo-password').value = demoAccount.password;
+    $('#login-error').textContent = '';
+  };
+  form.onsubmit = (event) => {
+    event.preventDefault();
+    const email = $('#demo-email').value.trim().toLowerCase();
+    const password = $('#demo-password').value;
+    if (email !== demoAccount.email || password !== demoAccount.password) {
+      $('#login-error').textContent = 'Use the demo account shown below to continue.';
+      return;
+    }
+    sessionStorage.setItem('ai-sre-demo-authenticated', 'true');
+    showApplication();
+  };
+  $('#logout').onclick = () => {
+    sessionStorage.removeItem('ai-sre-demo-authenticated');
+    $('#app-shell').classList.add('hidden');
+    $('#login-view').classList.remove('hidden');
+    $('#demo-email').value = '';
+    $('#demo-password').value = '';
+  };
+}
+
+function showApplication() {
+  $('#login-view').classList.add('hidden');
+  $('#app-shell').classList.remove('hidden');
+  if (!data) {
+    loadApplication().catch((error) => {
+      $('#investigation').innerHTML = `<p>Demo failed to load: ${escapeHtml(error.message)}</p>`;
+    });
+  }
 }
 
 function renderMetrics() {
@@ -224,6 +270,4 @@ function bindNav() {
   });
 }
 
-start().catch((error) => {
-  $('#investigation').innerHTML = `<p>Demo failed to load: ${escapeHtml(error.message)}</p>`;
-});
+start();

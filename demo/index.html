@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="AI SRE Copilot — incident diagnosis grounded in operational evidence and human review.">
   <title>AI SRE Copilot</title>
-  <link rel="stylesheet" href="styles.css?v=2">
-  <link rel="stylesheet" href="enhancements.css?v=2">
+  <link rel="stylesheet" href="styles.css?v=3">
+  <link rel="stylesheet" href="enhancements.css?v=3">
 </head>
 <body>
   <header class="topbar">
@@ -25,15 +25,18 @@
       <article id="investigation" class="panel" aria-live="polite"></article>
     </section>
     <section id="evaluation-view" class="evaluation hidden">
-      <div class="section-heading"><p class="eyebrow">DEMO QUALITY CHECKS</p><h2>Demo validation</h2><p>Check the five investigation records included in this demo for completeness, valid evidence citations, and human-review safeguards.</p></div>
-      <div class="validation-toolbar"><div><strong>Recorded-output checks</strong><span>Schema, citations, safety, and scenario coverage</span></div><button class="diagnose" id="run-validation">Run demo checks</button></div>
-      <div id="validation-results" class="validation-results" aria-live="polite"><div class="validation-empty">Click “Run demo checks” to validate the five distinct investigation records.</div></div>
-      <h3 class="target-heading">Full local evaluation targets</h3>
-      <div id="evaluation-grid" class="evaluation-grid"></div>
-      <div class="policy"><strong>Safety invariant</strong><span>The system can recommend a fix, but it has no tool capable of executing one.</span></div>
+      <div class="section-heading"><p class="eyebrow">INCIDENT-SPECIFIC RESULTS</p><h2>Scenario evaluation</h2><p>Select an incident to inspect its root-cause category, confidence, citations, and investigation record. The values update for the selected scenario.</p></div>
+      <div class="scenario-picker"><label for="evaluation-incident">Incident to evaluate</label><select id="evaluation-incident"></select></div>
+      <div id="scenario-evaluation" aria-live="polite"></div>
+      <details class="benchmark-details">
+        <summary>View fixed benchmark targets</summary>
+        <p>These are project-wide acceptance requirements, so they do not change when a different incident is selected.</p>
+        <div id="evaluation-grid" class="evaluation-grid"></div>
+      </details>
+      <div class="policy"><strong>Human approval required</strong><span>The system investigates incidents and recommends actions. It never changes infrastructure automatically.</span></div>
     </section>
   </main>
   <footer><span>Built by Jyothsna Goru</span><span>FastAPI · LangGraph · MCP · Ollama · ChromaDB · Kafka</span></footer>
-  <script src="app.js?v=2"></script>
+  <script src="app.js?v=3"></script>
 </body>
 </html>

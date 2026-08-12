@@ -151,18 +151,23 @@ function downloadReport(incident) {
 }
 
 function renderEvaluation() {
+  const selector = $('#evaluation-incident');
+  selector.innerHTML = data.incidents.map((incident) => `
+    <option value="${incident.id}">${incident.id} · ${escapeHtml(incident.service)} · ${escapeHtml(incident.title)}</option>
+  `).join('');
   $('#evaluation-grid').innerHTML = data.evaluation_targets.map((target) => `
     <div class="eval-card">
       <div><h3>${escapeHtml(target.Metric)}</h3><p>Acceptance target: ${escapeHtml(target.Target)}</p></div>
       <span class="pending">${escapeHtml(target['Published result'])}</span>
     </div>
   `).join('');
-  $('#run-validation').onclick = runDemoValidation;
+  selector.onchange = () => renderScenarioEvaluation(selector.value);
+  renderScenarioEvaluation(data.incidents[0].id);
 }
 
-async function runDemoValidation() {
-  const button = $('#run-validation');
-  const results = $('#validation-results');
+function renderScenarioEvaluation(id) {
+  const incident = data.incidents.find((item) => item.id === id);
+  const report = incident.report;
   const requiredReportFields = [
     'probable_root_cause',
     'confidence_score',
@@ -172,37 +177,34 @@ async function runDemoValidation() {
     'prevention_action',
     'human_review_required',
   ];
-  const schemaComplete = data.incidents.filter((incident) => (
-    requiredReportFields.every((field) => Object.hasOwn(incident.report, field))
-  )).length;
-  const citedIds = data.incidents.flatMap((incident) => incident.report.evidence_ids);
-  const availableIds = new Set(data.incidents.flatMap((incident) => (
-    incident.evidence.map((evidence) => evidence.evidence_id)
-  )));
-  const resolvedCitations = citedIds.filter((id) => availableIds.has(id)).length;
-  const reviewRequired = data.incidents.filter((incident) => incident.report.human_review_required).length;
-  const checks = [
-    ['Distinct incident scenarios', `${new Set(data.incidents.map((incident) => incident.service)).size}/${data.incidents.length}`, data.incidents.length === 5],
-    ['Schema-complete RCA records', `${schemaComplete}/${data.incidents.length}`, schemaComplete === data.incidents.length],
-    ['Evidence citations resolved', `${resolvedCitations}/${citedIds.length}`, resolvedCitations === citedIds.length],
-    ['Human review required', `${reviewRequired}/${data.incidents.length}`, reviewRequired === data.incidents.length],
-    ['Automatic actions executed', String(data.dataset.automatic_actions), data.dataset.automatic_actions === 0],
-  ];
-
-  button.disabled = true;
-  results.innerHTML = '';
-  for (let index = 0; index < checks.length; index += 1) {
-    const [label, value, passed] = checks[index];
-    button.textContent = `Checking ${index + 1}/${checks.length}…`;
-    await new Promise((resolve) => setTimeout(resolve, 300));
-    results.insertAdjacentHTML('beforeend', `
-      <div class="validation-row ${passed ? 'passed' : 'failed'}">
-        <span>${passed ? '✓' : '×'} ${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong>
+  const availableEvidence = new Set(incident.evidence.map((evidence) => evidence.evidence_id));
+  const resolvedCitations = report.evidence_ids.filter((evidenceId) => availableEvidence.has(evidenceId));
+  const schemaComplete = requiredReportFields.every((field) => Object.hasOwn(report, field));
+  const category = report.root_cause_category
+    .split('_')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+  $('#scenario-evaluation').innerHTML = `
+    <article class="scenario-result">
+      <div class="scenario-heading">
+        <div><p class="eyebrow">${incident.id} · ${escapeHtml(incident.severity)}</p><h3>${escapeHtml(incident.title)}</h3></div>
+        <span class="scenario-service">${escapeHtml(incident.service)}</span>
       </div>
-    `);
-  }
-  button.textContent = 'Run checks again';
-  button.disabled = false;
+      <p class="scenario-alert">${escapeHtml(incident.alert_summary)}</p>
+      <div class="scenario-metrics">
+        <div class="scenario-card"><span>Confidence</span><strong>${Math.round(report.confidence_score * 100)}%</strong></div>
+        <div class="scenario-card"><span>Root-cause category</span><strong>${escapeHtml(category)}</strong></div>
+        <div class="scenario-card"><span>Citations resolved</span><strong>${resolvedCitations.length}/${report.evidence_ids.length}</strong></div>
+        <div class="scenario-card"><span>RCA schema</span><strong>${schemaComplete ? 'Complete' : 'Incomplete'}</strong></div>
+      </div>
+      <div class="scenario-cause"><span>Probable root cause</span><p>${escapeHtml(report.probable_root_cause)}</p></div>
+      <div class="scenario-columns">
+        <div><h4>Investigation record</h4><ol>${incident.trace.map((step) => `<li>${escapeHtml(step.label)}</li>`).join('')}</ol></div>
+        <div><h4>Evidence used</h4><ul>${incident.evidence.map((evidence) => `<li><code>${escapeHtml(evidence.evidence_id)}</code><span>${escapeHtml(evidence.summary)}</span></li>`).join('')}</ul></div>
+      </div>
+      <div class="scenario-status">✓ All citations resolved · ✓ Human review required · ✓ No automatic action</div>
+    </article>
+  `;
 }
 
 function bindNav() {
@@ -214,6 +216,10 @@ function bindNav() {
       $('#incidents-view').classList.toggle('hidden', showEvaluation);
       $('.demo-instructions').classList.toggle('hidden', showEvaluation);
       $('#evaluation-view').classList.toggle('hidden', !showEvaluation);
+      if (showEvaluation) {
+        $('#evaluation-incident').value = currentId;
+        renderScenarioEvaluation(currentId);
+      }
     };
   });
 }

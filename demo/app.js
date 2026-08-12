@@ -24,11 +24,11 @@ async function start() {
 
 async function loadApplication() {
   try {
-    const response = await fetch('data.json?v=5', { cache: 'no-store' });
-    if (!response.ok) {
-      throw new Error(`Could not load incident records (${response.status}).`);
+    const embeddedData = $('#demo-data')?.textContent;
+    if (!embeddedData) {
+      throw new Error('The embedded incident records are unavailable.');
     }
-    data = await response.json();
+    data = JSON.parse(embeddedData);
     renderMetrics();
     renderList();
     renderEvaluation();
@@ -42,7 +42,7 @@ async function loadApplication() {
 function showLoadError(error) {
   const message = escapeHtml(error.message || 'The incident records could not be loaded.');
   $('#incident-list').innerHTML = `<div class="load-error"><strong>Unable to load incidents</strong><span>${message}</span><button id="retry-load" type="button">Retry loading demo</button></div>`;
-  $('#investigation').innerHTML = '<div class="load-error"><strong>Demo data is unavailable</strong><span>Check your internet connection and retry.</span></div>';
+  $('#investigation').innerHTML = '<div class="load-error"><strong>Demo data is unavailable</strong><span>Refresh the page and retry.</span></div>';
   $('#retry-load').onclick = () => {
     $('#incident-list').innerHTML = '<p class="loading-message">Loading incident records…</p>';
     $('#investigation').innerHTML = '<p class="loading-message">Preparing investigation workspace…</p>';

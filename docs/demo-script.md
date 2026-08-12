@@ -1,4 +1,4 @@
-# Five-minute recruiter demo
+# Five-minute project demo
 
 1. Open the public GitHub Pages link and explain that it replays recorded outputs from the genuine local system.
 2. Select `INC-003`, the payment deployment regression.
@@ -9,4 +9,3 @@
 7. In the repository, show the hidden evaluation table, read-only MCP tools, safety tests, LangGraph workflow, Docker Compose stack, and CI.
 
 Strong closing line: “The model explains evidence; deterministic code controls access, validation, and safety.”
-

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from contextlib import asynccontextmanager
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from fastapi import Depends, FastAPI, HTTPException, Response, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -23,7 +23,6 @@ from backend.schemas import (
 )
 from backend.security import create_token, current_user, require_roles, verify_password
 from backend.seed import seed_database
-
 
 settings = get_settings()
 
@@ -175,7 +174,7 @@ def review_diagnosis(
     diagnosis.review_status = payload.decision
     diagnosis.review_note = payload.note
     diagnosis.reviewed_by = user.id
-    diagnosis.reviewed_at = datetime.now(timezone.utc)
+    diagnosis.reviewed_at = datetime.now(UTC)
     diagnosis.status = "completed"
     diagnosis.trace = [
         *diagnosis.trace,
@@ -267,4 +266,3 @@ def metrics(db: Session = Depends(get_db)) -> Response:
         f"ai_sre_diagnoses_total {diagnoses}\n"
     )
     return Response(content=body, media_type="text/plain; version=0.0.4")
-

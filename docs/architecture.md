@@ -30,8 +30,7 @@ flowchart LR
 | Mode | Purpose | Inference |
 |---|---|---|
 | Docker Compose | Genuine end-to-end local system | Live, local Ollama |
-| GitHub Pages | Permanent zero-cost recruiter link | Recorded, labeled local runs |
+| GitHub Pages | Permanent zero-cost project link | Recorded, labeled local runs |
 | Streamlit Community Cloud | Optional hosted Python replay | Recorded, labeled local runs |
 
 The hosted demo is deliberately honest about replaying locally produced results. Running the complete stack, including a local model and Kafka, on a permanently free hosted service is not a dependable constraint.
-

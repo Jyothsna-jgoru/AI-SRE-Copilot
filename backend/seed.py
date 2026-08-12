@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 
+from simulator.generator import build_dataset
 from sqlalchemy import func, select
 
 from backend.db import SessionLocal, init_database
@@ -16,8 +17,6 @@ from backend.models import (
     User,
 )
 from backend.security import hash_password
-from simulator.generator import build_dataset
-
 
 logger = logging.getLogger(__name__)
 

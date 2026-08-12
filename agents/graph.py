@@ -1,17 +1,21 @@
 from __future__ import annotations
 
 import asyncio
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import TypedDict
 
 from langgraph.graph import END, START, StateGraph
 
-from agents.evidence import contains_unsafe_execution_claim, flatten_evidence, validate_evidence_citations
+from agents.evidence import (
+    contains_unsafe_execution_claim,
+    flatten_evidence,
+    validate_evidence_citations,
+)
 from agents.llm import RCAClient
 
 
 def timestamp() -> str:
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
 class InvestigationState(TypedDict, total=False):
@@ -90,4 +94,3 @@ def build_investigation_graph(tool_client, llm_client: RCAClient):
     graph.add_edge("analyze", "validate")
     graph.add_edge("validate", END)
     return graph.compile()
-

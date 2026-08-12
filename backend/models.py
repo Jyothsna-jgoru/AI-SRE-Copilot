@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Integer, JSON, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -9,7 +9,7 @@ from backend.db import Base
 
 
 def utcnow() -> datetime:
-    return datetime.now(timezone.utc)
+    return datetime.now(UTC)
 
 
 class User(Base):
@@ -145,4 +145,3 @@ class EvaluationCase(Base):
     expected_root_cause_category: Mapped[str] = mapped_column(String(64))
     expected_root_cause: Mapped[str] = mapped_column(Text)
     required_evidence_ids: Mapped[list[str]] = mapped_column(JSON, default=list)
-

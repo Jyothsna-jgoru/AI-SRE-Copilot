@@ -2,18 +2,17 @@ import base64
 import hashlib
 import hmac
 import os
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
-import jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+import jwt
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from backend.config import get_settings
 from backend.db import get_db
 from backend.models import User
-
 
 bearer = HTTPBearer(auto_error=False)
 
@@ -39,7 +38,7 @@ def verify_password(password: str, encoded: str) -> bool:
 
 def create_token(user: User) -> str:
     settings = get_settings()
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     payload = {
         "sub": str(user.id),
         "email": user.email,
@@ -79,4 +78,3 @@ def require_roles(*roles: str):
         return user
 
     return dependency
-

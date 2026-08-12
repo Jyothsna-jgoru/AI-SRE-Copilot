@@ -3,9 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="AI SRE Copilot — evidence-grounded, local-first incident diagnosis with human review.">
+  <meta name="description" content="AI SRE Copilot — incident diagnosis grounded in operational evidence and human review.">
   <title>AI SRE Copilot</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=2">
+  <link rel="stylesheet" href="enhancements.css?v=2">
 </head>
 <body>
   <header class="topbar">
@@ -14,22 +15,25 @@
   </header>
   <main>
     <section class="hero">
-      <div><p class="eyebrow">LOCAL-FIRST · ZERO PAID APIS</p><h1>Evidence before conclusions.</h1><p class="lede">An agentic incident investigator that correlates logs, Kafka state, deployments, runbooks, and past RCAs—then stops for human review.</p></div>
-      <div class="mode"><span class="pulse"></span><div><strong>Hosted portfolio demo</strong><small>Recorded from the local Ollama workflow</small></div></div>
+      <div><p class="eyebrow">LOCAL · READ-ONLY · NO PAID API</p><h1>Evidence before conclusions.</h1><p class="lede">Investigate incidents by correlating logs, Kafka state, deployments, runbooks, and previous resolutions. Every recommendation requires human review.</p></div>
+      <div class="mode"><span class="pulse"></span><div><strong>Interactive demo</strong><small>Validated results from the local workflow</small></div></div>
     </section>
     <section class="metrics" id="metrics"></section>
+    <div class="demo-instructions"><strong>Try it:</strong> select an incident, run its diagnosis, then choose another incident to see a different investigation and root cause.</div>
     <section id="incidents-view" class="workspace">
       <aside><div class="section-title"><span>Incident queue</span><span id="incident-count"></span></div><div id="incident-list" class="incident-list"></div></aside>
-      <article id="investigation" class="panel"></article>
+      <article id="investigation" class="panel" aria-live="polite"></article>
     </section>
     <section id="evaluation-view" class="evaluation hidden">
-      <div class="section-heading"><p class="eyebrow">MEASUREMENT WITHOUT MADE-UP CLAIMS</p><h2>Evaluation contract</h2><p>Targets remain visibly pending until the full local Ollama golden-set run completes.</p></div>
+      <div class="section-heading"><p class="eyebrow">DEMO QUALITY CHECKS</p><h2>Demo validation</h2><p>Check the five investigation records included in this demo for completeness, valid evidence citations, and human-review safeguards.</p></div>
+      <div class="validation-toolbar"><div><strong>Recorded-output checks</strong><span>Schema, citations, safety, and scenario coverage</span></div><button class="diagnose" id="run-validation">Run demo checks</button></div>
+      <div id="validation-results" class="validation-results" aria-live="polite"><div class="validation-empty">Click “Run demo checks” to validate the five distinct investigation records.</div></div>
+      <h3 class="target-heading">Full local evaluation targets</h3>
       <div id="evaluation-grid" class="evaluation-grid"></div>
       <div class="policy"><strong>Safety invariant</strong><span>The system can recommend a fix, but it has no tool capable of executing one.</span></div>
     </section>
   </main>
   <footer><span>Built by Jyothsna Goru</span><span>FastAPI · LangGraph · MCP · Ollama · ChromaDB · Kafka</span></footer>
-  <script src="app.js"></script>
+  <script src="app.js?v=2"></script>
 </body>
 </html>
-

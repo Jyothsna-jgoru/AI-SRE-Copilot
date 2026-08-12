@@ -56,7 +56,6 @@ docker compose up --build
 
 The first start downloads `qwen3:4b`, so it takes longer. Then open:
 
-- Dashboard: http://localhost:8501
 - API documentation: http://localhost:8000/docs
 - API health: http://localhost:8000/health
 

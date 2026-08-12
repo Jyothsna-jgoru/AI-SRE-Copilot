@@ -2,7 +2,7 @@ import time
 from collections.abc import Generator
 from pathlib import Path
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, event
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
 from backend.config import get_settings
@@ -21,6 +21,15 @@ engine = create_engine(
     pool_pre_ping=True,
     connect_args={"check_same_thread": False} if settings.database_url.startswith("sqlite") else {},
 )
+
+if settings.database_url.startswith("sqlite"):
+
+    @event.listens_for(engine, "connect")
+    def enable_sqlite_foreign_keys(dbapi_connection, _connection_record) -> None:
+        cursor = dbapi_connection.cursor()
+        cursor.execute("PRAGMA foreign_keys=ON")
+        cursor.close()
+
 SessionLocal = sessionmaker(bind=engine, autoflush=False, expire_on_commit=False)
 
 
@@ -42,4 +51,3 @@ def init_database(retries: int = 20, delay_seconds: float = 1.5) -> None:
             time.sleep(delay_seconds)
     if last_error:
         raise last_error
-

@@ -77,6 +77,10 @@ def seed_database(index_rag: bool = False) -> dict[str, int | str]:
                 for item in dataset["incidents"]
             ]
         )
+        # Persist parent incidents before inserting rows that reference them.
+        # PostgreSQL enforces these foreign keys during the flush, while SQLite
+        # may otherwise hide an incorrect unit-of-work insertion order.
+        db.flush()
         db.add_all(
             [
                 LogRecord(

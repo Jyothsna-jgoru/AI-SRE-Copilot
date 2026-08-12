@@ -1,0 +1,20 @@
+[project]
+name = "ai-sre-copilot"
+version = "0.1.0"
+description = "Evidence-grounded, local-first AI incident diagnosis with human review"
+requires-python = ">=3.11,<3.14"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --disable-warnings --maxfail=1"
+asyncio_mode = "auto"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+exclude = [".venv", ".local"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = ["E501"]
+

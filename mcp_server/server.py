@@ -9,7 +9,6 @@ from backend.config import get_settings
 from backend.db import SessionLocal, init_database
 from backend.models import Deployment, Incident, KafkaEvent, KnowledgeDocument, LogRecord, Service
 
-
 settings = get_settings()
 mcp = FastMCP(
     "AI SRE Investigation Tools",
@@ -239,4 +238,3 @@ def get_service_health(incident_id: str) -> dict:
 if __name__ == "__main__":
     init_database()
     mcp.run(transport="streamable-http")
-

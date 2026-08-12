@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 import random
-from datetime import datetime, timedelta, timezone
-
+from datetime import UTC, datetime, timedelta
 
 SERVICES = [
     {
@@ -147,7 +146,7 @@ def build_dataset(incident_count: int = 50, seed: int = 42) -> dict:
     if incident_count < 5:
         raise ValueError("At least five incidents are required to cover every scenario")
     rng = random.Random(seed)
-    base_time = datetime(2026, 7, 1, 9, 0, tzinfo=timezone.utc)
+    base_time = datetime(2026, 7, 1, 9, 0, tzinfo=UTC)
     scenario_names = list(SCENARIOS)
     incidents: list[dict] = []
     logs: list[dict] = []

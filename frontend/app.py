@@ -9,7 +9,6 @@ import pandas as pd
 import requests
 import streamlit as st
 
-
 ROOT = Path(__file__).resolve().parents[1]
 API_URL = os.getenv("API_URL", "http://localhost:8000")
 DEMO_MODE = os.getenv("DEMO_MODE", "false").lower() == "true"
@@ -200,4 +199,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from sqlalchemy import select
 
@@ -11,7 +11,6 @@ from agents.llm import OllamaRCAClient
 from agents.tools import MCPInvestigationClient
 from backend.db import SessionLocal, init_database
 from backend.models import Diagnosis, Incident, Service, ToolCall
-
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
 logger = logging.getLogger("ai-sre-worker")
@@ -34,7 +33,7 @@ def _claim_job() -> tuple[int, dict] | None:
         ).one()
         incident, service = row[0], row[1]
         diagnosis.status = "running"
-        diagnosis.started_at = datetime.now(timezone.utc)
+        diagnosis.started_at = datetime.now(UTC)
         diagnosis.trace = [
             {
                 "timestamp": diagnosis.started_at.isoformat(),
@@ -57,7 +56,7 @@ async def _process(diagnosis_id: int, incident: dict) -> None:
     graph = build_investigation_graph(MCPInvestigationClient(), OllamaRCAClient())
     try:
         result = await graph.ainvoke({"incident": incident, "trace": []})
-        completed_at = datetime.now(timezone.utc)
+        completed_at = datetime.now(UTC)
         with SessionLocal() as db:
             diagnosis = db.get(Diagnosis, diagnosis_id)
             if diagnosis is None:
@@ -88,7 +87,7 @@ async def _process(diagnosis_id: int, incident: dict) -> None:
             diagnosis = db.get(Diagnosis, diagnosis_id)
             if diagnosis:
                 diagnosis.status = "failed"
-                diagnosis.completed_at = datetime.now(timezone.utc)
+                diagnosis.completed_at = datetime.now(UTC)
                 diagnosis.error = str(exc)
                 diagnosis.trace = [
                     *diagnosis.trace,
@@ -115,4 +114,3 @@ async def run_worker() -> None:
 
 if __name__ == "__main__":
     asyncio.run(run_worker())
-

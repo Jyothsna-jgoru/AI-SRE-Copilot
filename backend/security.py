@@ -4,9 +4,9 @@ import hmac
 import os
 from datetime import UTC, datetime, timedelta
 
+import jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-import jwt
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 

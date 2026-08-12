@@ -23,12 +23,31 @@ async function start() {
 }
 
 async function loadApplication() {
-  data = await fetch('data.json', { cache: 'no-store' }).then((response) => response.json());
-  renderMetrics();
-  renderList();
-  renderEvaluation();
-  selectIncident(data.incidents[0].id);
-  bindNav();
+  try {
+    const response = await fetch('data.json?v=5', { cache: 'no-store' });
+    if (!response.ok) {
+      throw new Error(`Could not load incident records (${response.status}).`);
+    }
+    data = await response.json();
+    renderMetrics();
+    renderList();
+    renderEvaluation();
+    selectIncident(data.incidents[0].id);
+    bindNav();
+  } catch (error) {
+    showLoadError(error);
+  }
+}
+
+function showLoadError(error) {
+  const message = escapeHtml(error.message || 'The incident records could not be loaded.');
+  $('#incident-list').innerHTML = `<div class="load-error"><strong>Unable to load incidents</strong><span>${message}</span><button id="retry-load" type="button">Retry loading demo</button></div>`;
+  $('#investigation').innerHTML = '<div class="load-error"><strong>Demo data is unavailable</strong><span>Check your internet connection and retry.</span></div>';
+  $('#retry-load').onclick = () => {
+    $('#incident-list').innerHTML = '<p class="loading-message">Loading incident records…</p>';
+    $('#investigation').innerHTML = '<p class="loading-message">Preparing investigation workspace…</p>';
+    loadApplication();
+  };
 }
 
 function bindDemoLogin() {
@@ -62,9 +81,7 @@ function showApplication() {
   $('#login-view').classList.add('hidden');
   $('#app-shell').classList.remove('hidden');
   if (!data) {
-    loadApplication().catch((error) => {
-      $('#investigation').innerHTML = `<p>Demo failed to load: ${escapeHtml(error.message)}</p>`;
-    });
+    loadApplication();
   }
 }
 

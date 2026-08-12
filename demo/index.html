@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="AI SRE Copilot — incident diagnosis grounded in operational evidence and human review.">
   <title>AI SRE Copilot</title>
-  <link rel="stylesheet" href="styles.css?v=4">
-  <link rel="stylesheet" href="enhancements.css?v=4">
+  <link rel="stylesheet" href="styles.css?v=5">
+  <link rel="stylesheet" href="enhancements.css?v=5">
 </head>
 <body>
   <main id="login-view" class="login-page">
@@ -43,8 +43,8 @@
     <section class="metrics" id="metrics"></section>
     <div class="demo-instructions"><strong>Try it:</strong> select an incident, run its diagnosis, then choose another incident to see a different investigation and root cause.</div>
     <section id="incidents-view" class="workspace">
-      <aside><div class="section-title"><span>Incident queue</span><span id="incident-count"></span></div><div id="incident-list" class="incident-list"></div></aside>
-      <article id="investigation" class="panel" aria-live="polite"></article>
+      <aside><div class="section-title"><span>Incident queue</span><span id="incident-count"></span></div><div id="incident-list" class="incident-list"><p class="loading-message">Loading incident records…</p></div></aside>
+      <article id="investigation" class="panel" aria-live="polite"><p class="loading-message">Preparing investigation workspace…</p></article>
     </section>
     <section id="evaluation-view" class="evaluation hidden">
       <div class="section-heading"><p class="eyebrow">INCIDENT-SPECIFIC RESULTS</p><h2>Scenario evaluation</h2><p>Select an incident to inspect its root-cause category, confidence, citations, and investigation record. The values update for the selected scenario.</p></div>
@@ -60,6 +60,6 @@
   </main>
   <footer><span>Built by Jyothsna Goru</span><span>FastAPI · LangGraph · MCP · Ollama · ChromaDB · Kafka</span></footer>
   </div>
-  <script src="app.js?v=4"></script>
+  <script src="app.js?v=5"></script>
 </body>
 </html>

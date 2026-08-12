@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="AI SRE Copilot — evidence-grounded, local-first incident diagnosis with human review.">
+  <title>AI SRE Copilot</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#"><span class="mark">A</span><span>AI SRE Copilot</span></a>
+    <nav><button class="nav-button active" data-view="incidents">Incidents</button><button class="nav-button" data-view="evaluation">Evaluation</button><a href="https://github.com/Jyothsna-jgoru/AI-SRE-Copilot">GitHub ↗</a></nav>
+  </header>
+  <main>
+    <section class="hero">
+      <div><p class="eyebrow">LOCAL-FIRST · ZERO PAID APIS</p><h1>Evidence before conclusions.</h1><p class="lede">An agentic incident investigator that correlates logs, Kafka state, deployments, runbooks, and past RCAs—then stops for human review.</p></div>
+      <div class="mode"><span class="pulse"></span><div><strong>Hosted portfolio demo</strong><small>Recorded from the local Ollama workflow</small></div></div>
+    </section>
+    <section class="metrics" id="metrics"></section>
+    <section id="incidents-view" class="workspace">
+      <aside><div class="section-title"><span>Incident queue</span><span id="incident-count"></span></div><div id="incident-list" class="incident-list"></div></aside>
+      <article id="investigation" class="panel"></article>
+    </section>
+    <section id="evaluation-view" class="evaluation hidden">
+      <div class="section-heading"><p class="eyebrow">MEASUREMENT WITHOUT MADE-UP CLAIMS</p><h2>Evaluation contract</h2><p>Targets remain visibly pending until the full local Ollama golden-set run completes.</p></div>
+      <div id="evaluation-grid" class="evaluation-grid"></div>
+      <div class="policy"><strong>Safety invariant</strong><span>The system can recommend a fix, but it has no tool capable of executing one.</span></div>
+    </section>
+  </main>
+  <footer><span>Built by Jyothsna Goru</span><span>FastAPI · LangGraph · MCP · Ollama · ChromaDB · Kafka</span></footer>
+  <script src="app.js"></script>
+</body>
+</html>
+

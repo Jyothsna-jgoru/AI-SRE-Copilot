@@ -1,0 +1,117 @@
+{
+  "mode": "recorded-local-run",
+  "dataset": {"incidents": 50, "logs": 1100, "knowledge_documents": 15, "automatic_actions": 0},
+  "evaluation_targets": [
+    {"Metric": "Root-cause category accuracy", "Target": ">= 80%", "Published result": "Pending full local run"},
+    {"Metric": "Required evidence coverage", "Target": ">= 90%", "Published result": "Pending full local run"},
+    {"Metric": "Structured-output validity", "Target": "100%", "Published result": "Enforced in tests"},
+    {"Metric": "Unsafe execution claims", "Target": "0", "Published result": "Enforced in tests"}
+  ],
+  "incidents": [
+    {
+      "id": "INC-003", "service": "payment-service", "title": "Payment error-rate regression after deployment", "severity": "SEV-1",
+      "alert_summary": "HTTP 500 rate increased from 0.4% to 18% immediately after deployment v2.4.1.",
+      "metrics": {"error_rate": "18.0%", "p95_latency": "1,280 ms", "availability": "91.2%"},
+      "trace": [
+        {"label": "Triaged alert and created evidence plan"}, {"label": "Searched error logs"},
+        {"label": "Correlated deployment v2.4.1"}, {"label": "Retrieved payment rollback runbook"},
+        {"label": "Validated citations and no-action policy"}
+      ],
+      "evidence": [
+        {"evidence_id": "log:INC-003:critical", "summary": "ERROR: provider configuration missing required merchant_account_id"},
+        {"evidence_id": "deployment:INC-003:v2.4.1", "summary": "v2.4.1 deployed 20 minutes before the alert; provider configuration loader changed"},
+        {"evidence_id": "runbook:deployment_regression", "summary": "Payment rollback procedure requires human authorization and post-rollback health checks"}
+      ],
+      "report": {
+        "issue_summary": "Payment authorization failures began immediately after release v2.4.1.", "affected_service": "payment-service",
+        "probable_root_cause": "Release v2.4.1 introduced an invalid payment-provider configuration key.",
+        "root_cause_category": "invalid_provider_configuration", "confidence_score": 0.94,
+        "evidence_ids": ["log:INC-003:critical", "deployment:INC-003:v2.4.1", "runbook:deployment_regression"],
+        "suggested_fix": "Restore the previous configuration and verify payment authorization health.",
+        "rollback_recommendation": "Recommend rollback to v2.4.0 after incident-commander approval.",
+        "prevention_action": "Add deployment-time configuration schema validation and a payment canary.", "human_review_required": true
+      }
+    },
+    {
+      "id": "INC-002", "service": "notification-service", "title": "Notification Kafka consumer lag", "severity": "SEV-2",
+      "alert_summary": "Consumer lag grew above 18,000 messages while processing throughput collapsed.",
+      "metrics": {"error_rate": "7.6%", "p95_latency": "1,280 ms", "availability": "97.4%"},
+      "trace": [{"label": "Triaged consumer alert"}, {"label": "Read consumer-lag snapshots"}, {"label": "Found poison-message failures"}, {"label": "Retrieved consumer recovery runbook"}, {"label": "Validated evidence citations"}],
+      "evidence": [
+        {"evidence_id": "kafka:INC-002:lag", "summary": "notification-service-consumer max lag reached 18,000"},
+        {"evidence_id": "log:INC-002:critical", "summary": "ERROR: deserialization failure; offset not committed; retry budget exhausted"},
+        {"evidence_id": "runbook:kafka_consumer_lag", "summary": "Quarantine poison events before restarting the consumer"}
+      ],
+      "report": {
+        "issue_summary": "Notification consumption stalled while lag increased.", "affected_service": "notification-service",
+        "probable_root_cause": "Poison messages repeatedly failed deserialization and prevented offset progress.",
+        "root_cause_category": "poison_message_deserialization", "confidence_score": 0.91,
+        "evidence_ids": ["kafka:INC-002:lag", "log:INC-002:critical", "runbook:kafka_consumer_lag"],
+        "suggested_fix": "Quarantine the poison message, repair schema handling, and restart the consumer after review.",
+        "rollback_recommendation": "No rollback unless the schema handler changed in the latest release.",
+        "prevention_action": "Add a dead-letter topic and schema compatibility tests.", "human_review_required": true
+      }
+    },
+    {
+      "id": "INC-001", "service": "inventory-service", "title": "Checkout API timeout", "severity": "SEV-2",
+      "alert_summary": "p95 latency increased from 240 ms to 8.4 s and checkout requests timed out.",
+      "metrics": {"error_rate": "7.6%", "p95_latency": "8,400 ms", "availability": "97.4%"},
+      "trace": [{"label": "Triaged timeout alert"}, {"label": "Searched correlated traces"}, {"label": "Checked dependency health"}, {"label": "Retrieved latency runbook"}, {"label": "Validated evidence citations"}],
+      "evidence": [
+        {"evidence_id": "log:INC-001:critical", "summary": "ERROR: upstream inventory reservation exceeded 8000ms deadline"},
+        {"evidence_id": "health:INC-001", "summary": "inventory-service p95 latency reached 8,400ms"},
+        {"evidence_id": "runbook:api_timeout", "summary": "Restore dependency latency before increasing timeout budgets"}
+      ],
+      "report": {
+        "issue_summary": "Inventory reservations exceeded the checkout timeout budget.", "affected_service": "inventory-service",
+        "probable_root_cause": "A slow inventory dependency exhausted the upstream request timeout budget.",
+        "root_cause_category": "downstream_timeout_budget_exhausted", "confidence_score": 0.89,
+        "evidence_ids": ["log:INC-001:critical", "health:INC-001", "runbook:api_timeout"],
+        "suggested_fix": "Reduce traffic pressure and restore inventory latency before tuning timeout budgets.",
+        "rollback_recommendation": "Rollback only if deployment evidence establishes temporal correlation.",
+        "prevention_action": "Add dependency latency SLOs, circuit breaking, and timeout-budget tests.", "human_review_required": true
+      }
+    },
+    {
+      "id": "INC-004", "service": "order-service", "title": "Order database connection exhaustion", "severity": "SEV-1",
+      "alert_summary": "Available database connections reached zero and order latency spiked.",
+      "metrics": {"error_rate": "18.0%", "p95_latency": "1,280 ms", "availability": "91.2%"},
+      "trace": [{"label": "Triaged database alert"}, {"label": "Searched pool-timeout logs"}, {"label": "Checked deployment window"}, {"label": "Retrieved database runbook"}, {"label": "Validated no-action policy"}],
+      "evidence": [
+        {"evidence_id": "log:INC-004:critical", "summary": "ERROR: QueuePool limit reached; connection timed out after 30 seconds"},
+        {"evidence_id": "health:INC-004", "summary": "Available order database connections reached zero"},
+        {"evidence_id": "runbook:database_exhaustion", "summary": "Shed load and identify leaked transactions before changing pool limits"}
+      ],
+      "report": {
+        "issue_summary": "Order requests stalled when the database pool exhausted.", "affected_service": "order-service",
+        "probable_root_cause": "A leaked transaction path exhausted the order-service connection pool.",
+        "root_cause_category": "transaction_connection_leak", "confidence_score": 0.9,
+        "evidence_ids": ["log:INC-004:critical", "health:INC-004", "runbook:database_exhaustion"],
+        "suggested_fix": "Stop the leaking path, shed load, and restore pool capacity.",
+        "rollback_recommendation": "Recommend rollback only after confirming the leak began with a release.",
+        "prevention_action": "Add transaction leak tests and pool saturation alerts.", "human_review_required": true
+      }
+    },
+    {
+      "id": "INC-005", "service": "api-gateway", "title": "Authentication API failure", "severity": "SEV-2",
+      "alert_summary": "Valid users received HTTP 401 responses across protected endpoints.",
+      "metrics": {"error_rate": "7.6%", "p95_latency": "1,280 ms", "availability": "97.4%"},
+      "trace": [{"label": "Triaged authentication alert"}, {"label": "Searched token-validation logs"}, {"label": "Checked recent configuration changes"}, {"label": "Retrieved key-rotation runbook"}, {"label": "Validated evidence citations"}],
+      "evidence": [
+        {"evidence_id": "log:INC-005:critical", "summary": "ERROR: JWT signature verification failed: active key id not found"},
+        {"evidence_id": "health:INC-005", "summary": "Authentication success rate fell across protected endpoints"},
+        {"evidence_id": "runbook:authentication_failure", "summary": "Restore the active signing key and validate key rotation"}
+      ],
+      "report": {
+        "issue_summary": "Valid access tokens were rejected by the gateway.", "affected_service": "api-gateway",
+        "probable_root_cause": "An expired signing-key configuration removed the active token-validation key.",
+        "root_cause_category": "expired_signing_key_configuration", "confidence_score": 0.92,
+        "evidence_ids": ["log:INC-005:critical", "health:INC-005", "runbook:authentication_failure"],
+        "suggested_fix": "Restore the active signing key and validate token rotation after review.",
+        "rollback_recommendation": "No application rollback is indicated by the retrieved evidence.",
+        "prevention_action": "Alert before key expiry and test overlapping rotation windows.", "human_review_required": true
+      }
+    }
+  ]
+}
+

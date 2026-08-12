@@ -1,0 +1,2 @@
+"""Asynchronous diagnosis worker."""
+

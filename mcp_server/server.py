@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import timedelta
+from typing import Any
 
 from mcp.server.fastmcp import FastMCP
 from sqlalchemy import desc, select
@@ -34,7 +35,7 @@ def _incident_and_service(db, incident_id: str) -> tuple[Incident, Service]:
 
 
 @mcp.tool(structured_output=True)
-def search_logs(incident_id: str, limit: int = 20) -> dict:
+def search_logs(incident_id: str, limit: int = 20) -> dict[str, Any]:
     """Return structured error and warning logs for one incident."""
     with SessionLocal() as db:
         incident, service = _incident_and_service(db, incident_id)
@@ -63,7 +64,7 @@ def search_logs(incident_id: str, limit: int = 20) -> dict:
 
 
 @mcp.tool(structured_output=True)
-def get_kafka_status(incident_id: str) -> dict:
+def get_kafka_status(incident_id: str) -> dict[str, Any]:
     """Return persisted Kafka events and consumer-lag snapshots for one incident."""
     with SessionLocal() as db:
         _incident_and_service(db, incident_id)
@@ -95,7 +96,7 @@ def get_kafka_status(incident_id: str) -> dict:
 
 
 @mcp.tool(structured_output=True)
-def check_deployment(incident_id: str) -> dict:
+def check_deployment(incident_id: str) -> dict[str, Any]:
     """Return recent deployments for the incident's affected service."""
     with SessionLocal() as db:
         incident, service = _incident_and_service(db, incident_id)
@@ -129,7 +130,7 @@ def check_deployment(incident_id: str) -> dict:
 
 
 @mcp.tool(structured_output=True)
-def retrieve_runbook(incident_id: str, query: str = "") -> dict:
+def retrieve_runbook(incident_id: str, query: str = "") -> dict[str, Any]:
     """Retrieve runbooks and service documents using ChromaDB, with a read-only DB fallback."""
     with SessionLocal() as db:
         incident, service = _incident_and_service(db, incident_id)
@@ -182,7 +183,7 @@ def retrieve_runbook(incident_id: str, query: str = "") -> dict:
 
 
 @mcp.tool(structured_output=True)
-def find_similar_incidents(incident_id: str) -> dict:
+def find_similar_incidents(incident_id: str) -> dict[str, Any]:
     """Return historical RCAs with matching service or observable symptoms."""
     with SessionLocal() as db:
         _incident, service = _incident_and_service(db, incident_id)
@@ -211,7 +212,7 @@ def find_similar_incidents(incident_id: str) -> dict:
 
 
 @mcp.tool(structured_output=True)
-def get_service_health(incident_id: str) -> dict:
+def get_service_health(incident_id: str) -> dict[str, Any]:
     """Return alert-time service health derived from stored metrics."""
     with SessionLocal() as db:
         incident, service = _incident_and_service(db, incident_id)

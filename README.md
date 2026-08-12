@@ -2,7 +2,13 @@
 
 An evidence-grounded, local-first incident diagnosis platform that correlates structured logs, Kafka state, deployment history, runbooks, and historical RCAs before proposing a human-reviewed remediation.
 
-[Open the permanent project demo](https://jyothsna-jgoru.github.io/AI-SRE-Copilot/) · [Architecture](docs/architecture.md) · [Evaluation methodology](docs/evaluation.md) · [Demo script](docs/demo-script.md)
+## Live project
+
+### [▶ Open the permanent AI SRE Copilot demo](https://jyothsna-jgoru.github.io/AI-SRE-Copilot/)
+
+No login is required for the public demonstration.
+
+[View architecture](docs/architecture.md) · [Read the evaluation methodology](docs/evaluation.md) · [Follow the demo script](docs/demo-script.md)
 
 > The public demo replays clearly labeled outputs from the local Ollama workflow. The genuine end-to-end stack runs locally with Docker Compose and uses no paid API.
 

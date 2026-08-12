@@ -27,11 +27,12 @@ def _login() -> bool:
         return True
     if st.session_state.get("token"):
         return True
+    st.markdown('<div class="login-kicker">LOCAL-FIRST · ZERO PAID APIS</div>', unsafe_allow_html=True)
     st.title("AI SRE Copilot")
-    st.caption("Local, evidence-grounded incident diagnosis")
+    st.caption("Sign in to the private local investigation workspace")
     with st.form("login"):
-        email = st.text_input("Email", value="analyst@local.dev")
-        password = st.text_input("Password", value="analyst123", type="password")
+        email = st.text_input("Email", placeholder="Enter your email")
+        password = st.text_input("Password", placeholder="Enter your password", type="password")
         submitted = st.form_submit_button("Sign in", use_container_width=True)
     if submitted:
         response = requests.post(
@@ -151,9 +152,88 @@ def main() -> None:
     st.markdown(
         """
         <style>
-        .stApp {background: #08111f; color: #e7eef8;}
-        [data-testid="stSidebar"] {background: #0d1929;}
-        div[data-testid="stMetric"] {background: #102035; padding: 1rem; border-radius: .75rem;}
+        :root {
+          --app-bg: #07111e;
+          --panel: #0d1a2a;
+          --panel-raised: #11243a;
+          --line: #27415d;
+          --text: #f4f8ff;
+          --muted: #a9b9ca;
+          --accent: #41d9c5;
+          --accent-dark: #05201c;
+        }
+        .stApp {
+          background:
+            radial-gradient(circle at 75% -10%, rgba(34, 83, 135, .38), transparent 34%),
+            var(--app-bg);
+          color: var(--text);
+        }
+        [data-testid="stHeader"] {background: rgba(7, 17, 30, .88);}
+        [data-testid="stSidebar"] {
+          background: #0a1624;
+          border-right: 1px solid var(--line);
+        }
+        [data-testid="stSidebar"] * {color: var(--text);}
+        .block-container {max-width: 1280px; padding-top: 3.25rem; padding-bottom: 4rem;}
+        h1, h2, h3, h4, p, label, [data-testid="stMarkdownContainer"] {color: var(--text);}
+        .stCaptionContainer, [data-testid="stCaptionContainer"], small {color: var(--muted) !important;}
+        a {color: #75e9db !important; font-weight: 700; text-decoration-thickness: 2px;}
+        a:hover {color: #b9fff5 !important; text-decoration: underline;}
+        .login-kicker {
+          color: var(--accent);
+          font-size: .76rem;
+          font-weight: 800;
+          letter-spacing: .15em;
+          margin-bottom: .5rem;
+        }
+        [data-testid="stForm"] {
+          max-width: 560px;
+          background: linear-gradient(145deg, rgba(16, 32, 53, .98), rgba(9, 22, 37, .98));
+          border: 1px solid var(--line);
+          border-radius: 18px;
+          padding: 1.4rem 1.5rem 1.5rem;
+          box-shadow: 0 22px 70px rgba(0, 0, 0, .25);
+        }
+        [data-baseweb="input"] {
+          background: #081522 !important;
+          border: 1px solid #365471 !important;
+          border-radius: 10px !important;
+        }
+        [data-baseweb="input"] input {color: var(--text) !important; caret-color: var(--accent);}
+        [data-baseweb="input"] input::placeholder {color: #8195aa !important; opacity: 1;}
+        [data-baseweb="select"] > div {
+          background: var(--panel) !important;
+          border-color: #365471 !important;
+          color: var(--text) !important;
+        }
+        .stButton > button, [data-testid="stFormSubmitButton"] > button {
+          min-height: 2.75rem;
+          border: 1px solid var(--accent) !important;
+          border-radius: 10px !important;
+          background: var(--accent) !important;
+          color: var(--accent-dark) !important;
+          font-weight: 800 !important;
+          box-shadow: 0 8px 26px rgba(65, 217, 197, .18);
+        }
+        .stButton > button:hover, [data-testid="stFormSubmitButton"] > button:hover {
+          background: #74eadb !important;
+          border-color: #74eadb !important;
+          transform: translateY(-1px);
+        }
+        div[data-testid="stMetric"] {
+          background: linear-gradient(145deg, #102035, #0b1828);
+          border: 1px solid var(--line);
+          padding: 1rem;
+          border-radius: 14px;
+        }
+        div[data-testid="stMetric"] * {color: var(--text) !important;}
+        [data-testid="stAlert"] {border-radius: 12px; border: 1px solid var(--line);}
+        [data-testid="stDataFrame"], [data-testid="stExpander"] {
+          border: 1px solid var(--line);
+          border-radius: 12px;
+          overflow: hidden;
+        }
+        hr {border-color: var(--line) !important;}
         </style>
         """,
         unsafe_allow_html=True,

@@ -67,11 +67,9 @@ The first start downloads `qwen3:4b`, so it takes longer. Then open:
 
 Local demonstration accounts:
 
-| Role | Email | Password | Capability |
-|---|---|---|---|
-| Viewer | `viewer@local.dev` | `viewer123` | Read incidents and reports |
-| Analyst | `analyst@local.dev` | `analyst123` | Request diagnoses |
-| Commander | `commander@local.dev` | `commander123` | Approve/reject recommendations |
+- Interactive demo: https://jyothsna-jgoru.github.io/AI-SRE-Copilot/
+  - Email: `demo@ai-sre.local`
+  - Password: `demo123`
 
 These credentials are synthetic and must not be reused in any real environment.
 

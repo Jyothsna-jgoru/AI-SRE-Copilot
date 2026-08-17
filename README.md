@@ -40,15 +40,6 @@ flowchart LR
     Guard --> Review[Human review]
 ```
 
-## Zero-cost deployment strategy
-
-The full system needs resources that a stable free hosted tier does not reliably provide: PostgreSQL, Kafka, ChromaDB, a worker, and CPU-based model inference. This repository therefore uses two honest modes:
-
-1. **Local live mode:** the real stack runs in Docker and performs live Ollama inference.
-2. **Public portfolio mode:** GitHub Pages provides a permanent clickable demonstration using recorded local outputs. It never claims the browser is running the model.
-
-No credit card, API key, paid domain, or cloud VM is required.
-
 ## Quick start
 
 Prerequisites: Docker Desktop with at least 12 GB memory available, Git, and approximately 10 GB free disk space.
